@@ -27,9 +27,11 @@ public class MyAlgoLogic implements AlgoLogic {
         BidLevel bid = state.getBidAt(0);
         AskLevel ask = state.getAskAt(0);
 
-        long spread = (ask.getPrice() - bid.getPrice()) / ask.getPrice() ;
+        long spread = ask.getPrice() - bid.getPrice() ;
 
-        if(spread >= 1) {
+        logger.info("The amount of orders we have:\n" + spread);
+
+        if(spread < 0 ) {
             long quantity =  Math.min(ask.getQuantity(), bid.getQuantity());
             return new CreateChildOrder(Side.BUY, quantity, ask.getPrice());
         } else {
