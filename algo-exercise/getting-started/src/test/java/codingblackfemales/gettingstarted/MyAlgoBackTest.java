@@ -1,6 +1,8 @@
 package codingblackfemales.gettingstarted;
 
 import codingblackfemales.algo.AlgoLogic;
+import codingblackfemales.sotw.ChildOrder;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -23,18 +25,18 @@ public class MyAlgoBackTest extends AbstractAlgoBackTest {
     }
 
     @Test
-    public void testExampleBackTest() throws Exception {
+    public void testBidSpread() throws Exception {
         //create a sample market data tick....
-        send(createTick());
+        send(createTickWithGreaterSpread());
 
         //ADD asserts when you have implemented your algo logic
-        //assertEquals(container.getState().getChildOrders().size(), 3);
+        Assert.assertEquals(container.getState().getChildOrders().size(), 1);
 
         //when: market data moves towards us
-        send(createTick2());
+        //send(createTick2());
 
         //then: get the state
-        var state = container.getState();
+        //var state = container.getState();
 
         //Check things like filled quantity, cancelled order count etc....
         //long filledQuantity = state.getChildOrders().stream().map(ChildOrder::getFilledQuantity).reduce(Long::sum).get();
