@@ -1,22 +1,22 @@
-import { Placeholder } from "../placeholder";
+
 import { MarketDepthRow, useMarketDepthData } from "./useMarketDepthData";
 import "./MarketDepth.css";
 import { useState, useEffect } from "react";
 import { schemas } from "../../data/algo-schemas";
 
 // prettier-ignore
-const testData: MarketDepthRow[] = [
-  { symbolLevel:"1230", level: 0, bid: 1000, bidQuantity: 500, offer: 1010, offerQuantity: 700 },
-  { symbolLevel:"1231", level: 1, bid: 990, bidQuantity: 700, offer: 1012, offerQuantity: 400 },
-  { symbolLevel:"1232", level: 2, bid: 985, bidQuantity: 1200, offer: 1013, offerQuantity: 800 },
-  { symbolLevel:"1233", level: 3, bid: 984, bidQuantity: 1300, offer: 1018, offerQuantity: 750 },
-  { symbolLevel:"1234", level: 4, bid: 970, bidQuantity: 800, offer: 1021, offerQuantity: 900 },
-  { symbolLevel:"1235", level: 5, bid: 969, bidQuantity: 700, offer: 1026, offerQuantity: 1500 },
-  { symbolLevel:"1236", level: 6, bid: 950, bidQuantity: 750, offer: 1027, offerQuantity: 1500 },
-  { symbolLevel:"1237", level: 7, bid: 945, bidQuantity: 900, offer: 1029, offerQuantity: 2000 },
-  { symbolLevel:"1238", level: 8, bid: 943, bidQuantity: 500, offer: 1031, offerQuantity: 500 },
-  { symbolLevel:"1239", level: 9, bid: 940, bidQuantity: 200, offer: 1024, offerQuantity: 800 },
-];
+// const testData: MarketDepthRow[] = [
+//   { symbolLevel:"1230", level: 0, bid: 1000, bidQuantity: 500, offer: 1010, offerQuantity: 700 },
+//   { symbolLevel:"1231", level: 1, bid: 990, bidQuantity: 700, offer: 1012, offerQuantity: 400 },
+//   { symbolLevel:"1232", level: 2, bid: 985, bidQuantity: 1200, offer: 1013, offerQuantity: 800 },
+//   { symbolLevel:"1233", level: 3, bid: 984, bidQuantity: 1300, offer: 1018, offerQuantity: 750 },
+//   { symbolLevel:"1234", level: 4, bid: 970, bidQuantity: 800, offer: 1021, offerQuantity: 900 },
+//   { symbolLevel:"1235", level: 5, bid: 969, bidQuantity: 700, offer: 1026, offerQuantity: 1500 },
+//   { symbolLevel:"1236", level: 6, bid: 950, bidQuantity: 750, offer: 1027, offerQuantity: 1500 },
+//   { symbolLevel:"1237", level: 7, bid: 945, bidQuantity: 900, offer: 1029, offerQuantity: 2000 },
+//   { symbolLevel:"1238", level: 8, bid: 943, bidQuantity: 500, offer: 1031, offerQuantity: 500 },
+//   { symbolLevel:"1239", level: 9, bid: 940, bidQuantity: 200, offer: 1024, offerQuantity: 800 },
+// ];
 
 /**
  * TODO
@@ -25,16 +25,41 @@ export const MarketDepthFeature = () => {
   const data = useMarketDepthData(schemas.prices);
   const [highestQuantity, setHighestQuantity] = useState<number>(0);
 
+  // map: level
+  // key: quantity
+  const bidPriceChange = new Map<number, number>();
+  const offerPriceChange = new Map<number, number>();
+
+  const determinePriceChange = (level: number, newPrice: number, type: "bid" | "offer"): boolean => {
+    try {
+      let prevPrice;
+      if(type === "bid") {
+        prevPrice = bidPriceChange.get(level);
+        bidPriceChange.set(level, newPrice);
+      }
+      else {
+        prevPrice = offerPriceChange.get(level);
+        offerPriceChange.set(level, newPrice);
+      }
+      if(prevPrice === undefined) { throw Error;}
+      return prevPrice < newPrice;
+    }
+    catch(error) {
+      return false;
+    }
+
+  }
+
   const arrowDirection = (direction: boolean) => {
     if (direction) {
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          shape-rendering="geometricPrecision"
-          text-rendering="geometricPrecision"
-          image-rendering="optimizeQuality"
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          shapeRendering="geometricPrecision"
+          textRendering="geometricPrecision"
+          imageRendering="optimizeQuality"
+          fillRule="evenodd"
+          clipRule="evenodd"
           viewBox="0 0 463.96 512"
         >
           <path
@@ -47,21 +72,31 @@ export const MarketDepthFeature = () => {
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          shape-rendering="geometricPrecision"
-          text-rendering="geometricPrecision"
-          image-rendering="optimizeQuality"
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          shapeRendering="geometricPrecision"
+          textRendering="geometricPrecision"
+          imageRendering="optimizeQuality"
+          fillRule="evenodd"
+          clipRule="evenodd"
           viewBox="0 0 464 512.05"
         >
           <path
-            fill-rule="nonzero"
+            fillRule="nonzero"
             d="M332.7 0v243.52h92.31c15.47.69 26.46 5.78 32.82 15.43 17.21 25.8-5.25 52.31-22.6 69.25l-173.6 169.52c-17.29 19.1-41.93 19.1-59.22 0L24.42 323.32C8.03 307.26-9.67 282.76 6.21 258.95c6.35-9.65 17.34-14.74 32.82-15.43h92.31V0H332.7z"
           />
         </svg>
       );
     }
   };
+
+  const storeHistoricalQuantities = (data: MarketDepthRow[]): void => {
+    for(const item of data) {
+      bidPriceChange.set(item.level, item.bid);
+      offerPriceChange.set(item.level, item.offer);
+    }
+  }
+
+  storeHistoricalQuantities(data);
+
   useEffect(() => {
     const max = data.reduce(
       (acc, item) => Math.max(acc, item.bidQuantity, item.offerQuantity),
@@ -70,13 +105,13 @@ export const MarketDepthFeature = () => {
     setHighestQuantity(max);
   }, []);
 
-  console.log(data);
   return (
       <table>
+        <tbody>
         <tr>
           <th></th>
           <th colSpan={2}>Bid</th>
-          <th colSpan={2}>Asks</th>
+          <th colSpan={2}>offers</th>
         </tr>
 
         <tr>
@@ -108,19 +143,18 @@ export const MarketDepthFeature = () => {
                 <div className="bid-cell">
                   {item.bid}
 
-                  <div className="arrow">{arrowDirection(false)}</div>
+                  <div className="arrow">{arrowDirection(determinePriceChange(item.level, item.bid, "bid"))}</div>
                 </div>
               </td>
               <td>
                 {" "}
-                <div className="ask-cell">
+                <div className="offer-cell">
                   {item.offer}
-
-                  <div className="arrow">{arrowDirection(true)}</div>
+                  <div className="arrow">{arrowDirection(determinePriceChange(item.level, item.offer, "offer"))}</div>
                 </div>
               </td>
               <td>
-                <div className="ask-quantity ">
+                <div className="offer-quantity ">
                   <div
                     style={{
                       width: `${Math.ceil(
@@ -137,6 +171,7 @@ export const MarketDepthFeature = () => {
             </tr>
           );
         })}
+        </tbody>
       </table>
   );
 };

@@ -23,7 +23,7 @@ table {
     justify-content: space-between;
 }
 
-.ask-cell {
+.offer-cell {
     display: flex;
     justify-content: space-between;
 }
@@ -44,7 +44,7 @@ table {
     padding: 5px;
 }
 
-.ask-quantity > div {
+.offer-quantity > div {
     background-color: #e23434;
     color: #ffffff;
     font-weight: 500;

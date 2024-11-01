@@ -23,7 +23,6 @@ class MarketPriceLevelStore {
   #columnMap: ColumnMap;
   constructor(columnMap: ColumnMap) {
     this.#columnMap = columnMap;
-    console.log({ columnMap });
   }
 
   get data() {
@@ -60,7 +59,6 @@ export const useMarketDepthData = (schema: TableSchema) => {
 
   const datasourceMessageHandler: SubscribeCallback = useCallback(
     (message) => {
-      console.log({ message });
       if (message.type === "viewport-update") {
         if (message.rows) {
           dataStore.update(message.rows);
