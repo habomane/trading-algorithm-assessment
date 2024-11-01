@@ -1,0 +1,70 @@
+table > tr, th, td {
+    border: 1px solid rgb(210, 210, 210);
+    border-spacing: 0px;
+    font-weight: 700;
+}
+
+th {
+    font-size: 14px;
+}
+
+table {
+    border-spacing: 0px;
+}
+
+.key {
+    text-align: center;
+}
+
+.bid-cell {
+    padding: 1px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.ask-cell {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bid-quantity {
+    display: flex;
+    justify-content: right;
+    height: 100%;
+    text-align: right;
+}
+
+
+.bid-quantity > div {
+    background-color: #077cb1;
+    color: #ffffff;
+    font-weight: 500;
+    height: full;
+    padding: 5px;
+}
+
+.ask-quantity > div {
+    background-color: #e23434;
+    color: #ffffff;
+    font-weight: 500;
+    height: full;
+    padding: 5px;
+}
+
+.arrow {
+    width: 10px;
+    height: 10px;
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    background-color: green;
+    
+}
+
+
+table {
+    margin-inline: 30%;
+}
