@@ -119,7 +119,7 @@ public abstract class AbstractAlgoBackTest extends SequencerTestCase {
         return directBuffer;
     }
 
-    protected UnsafeBuffer createTickWithGreaterSpread(){
+    protected UnsafeBuffer createTickValidDifference(){
 
         final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
         final BookUpdateEncoder encoder = new BookUpdateEncoder();
@@ -141,9 +141,9 @@ public abstract class AbstractAlgoBackTest extends SequencerTestCase {
                 .next().price(91L).size(300L);
 
         encoder.askBookCount(3)
-                .next().price(24L).size(501L)
-                .next().price(39L).size(200L)
-                .next().price(84L).size(5000L);
+                .next().price(88L).size(501L)
+                .next().price(95L).size(200L)
+                .next().price(100L).size(5000L);
 
         encoder.instrumentStatus(InstrumentStatus.CONTINUOUS);
 

@@ -44,7 +44,7 @@ public abstract class AbstractAlgoTest extends SequencerTestCase {
     public abstract AlgoLogic createAlgoLogic();
 
 
-    protected UnsafeBuffer createTick(){
+    protected UnsafeBuffer createTickValidDifference(){
 
         final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
         final BookUpdateEncoder encoder = new BookUpdateEncoder();
@@ -60,14 +60,45 @@ public abstract class AbstractAlgoTest extends SequencerTestCase {
         encoder.instrumentId(123L);
 
         encoder.askBookCount(3)
-                .next().price(100L).size(101L)
-                .next().price(110L).size(200L)
-                .next().price(115L).size(5000L);
+                .next().price(110L).size(50L)
+                .next().price(115L).size(119L)
+                .next().price(125L).size(8000L);
 
         encoder.bidBookCount(3)
-                .next().price(98L).size(100L)
-                .next().price(95L).size(200L)
-                .next().price(91L).size(300L);
+                .next().price(125L).size(80L)
+                .next().price(120L).size(500L)
+                .next().price(100L).size(100L);
+
+        encoder.instrumentStatus(InstrumentStatus.CONTINUOUS);
+        encoder.source(Source.STREAM);
+
+        return directBuffer;
+    }
+
+    protected UnsafeBuffer createTickNoDifference(){
+
+        final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
+        final BookUpdateEncoder encoder = new BookUpdateEncoder();
+
+        final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024);
+        final UnsafeBuffer directBuffer = new UnsafeBuffer(byteBuffer);
+
+        //write the encoded output to the direct buffer
+        encoder.wrapAndApplyHeader(directBuffer, 0, headerEncoder);
+
+        //set the fields to desired values
+        encoder.venue(Venue.XLON);
+        encoder.instrumentId(123L);
+
+        encoder.askBookCount(3)
+                .next().price(78L).size(900L)
+                .next().price(88L).size(100L)
+                .next().price(100L).size(800L);
+
+        encoder.bidBookCount(3)
+                .next().price(89L).size(90L)
+                .next().price(88L).size(60L)
+                .next().price(79L).size(100L);
 
         encoder.instrumentStatus(InstrumentStatus.CONTINUOUS);
         encoder.source(Source.STREAM);

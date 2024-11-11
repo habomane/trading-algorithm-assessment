@@ -27,7 +27,7 @@ public class MyAlgoBackTest extends AbstractAlgoBackTest {
     @Test
     public void testBidSpread() throws Exception {
         //create a sample market data tick....
-        send(createTickWithGreaterSpread());
+        send(createTickValidDifference());
 
         //ADD asserts when you have implemented your algo logic
         Assert.assertEquals(1, container.getState().getChildOrders().size());
