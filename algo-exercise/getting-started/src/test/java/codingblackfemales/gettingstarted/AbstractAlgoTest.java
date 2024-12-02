@@ -44,7 +44,7 @@ public abstract class AbstractAlgoTest extends SequencerTestCase {
     public abstract AlgoLogic createAlgoLogic();
 
 
-    protected UnsafeBuffer createTickValidDifference(){
+    protected UnsafeBuffer createTickGreaterBid(){
 
         final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
         final BookUpdateEncoder encoder = new BookUpdateEncoder();
@@ -75,7 +75,7 @@ public abstract class AbstractAlgoTest extends SequencerTestCase {
         return directBuffer;
     }
 
-    protected UnsafeBuffer createTickNoDifference(){
+    protected UnsafeBuffer createTickGreaterAsk(){
 
         final MessageHeaderEncoder headerEncoder = new MessageHeaderEncoder();
         final BookUpdateEncoder encoder = new BookUpdateEncoder();
@@ -91,7 +91,7 @@ public abstract class AbstractAlgoTest extends SequencerTestCase {
         encoder.instrumentId(123L);
 
         encoder.askBookCount(3)
-                .next().price(78L).size(900L)
+                .next().price(103L).size(900L)
                 .next().price(88L).size(100L)
                 .next().price(100L).size(800L);
 

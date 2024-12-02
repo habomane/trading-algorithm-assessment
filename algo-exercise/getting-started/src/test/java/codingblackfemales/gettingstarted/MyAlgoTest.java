@@ -26,48 +26,19 @@ public class MyAlgoTest extends AbstractAlgoTest {
 
 
     @Test
-    public void testSignificantDifferenceSize() throws Exception {
+    public void testBidGreater() throws Exception {
 
-        send(createTickValidDifference());
-        Assert.assertEquals(2, container.getState().getChildOrders().size());
+        send(createTickGreaterBid());
+        Assert.assertEquals(1, container.getState().getChildOrders().size());
     }
 
     @Test
-    public void testNoneDifferenceSize() throws Exception {
+    public void testAskGreater() throws Exception {
 
-        send(createTickNoDifference());
-        Assert.assertEquals(0, container.getState().getChildOrders().size());
+        send(createTickGreaterAsk());
+        Assert.assertEquals(1, container.getState().getChildOrders().size());
     }
 
-    @Test
-    public void testSignificantDifferenceQuantity() throws Exception {
 
-        send(createTickValidDifference());
-        long sum = container.getState().getChildOrders().stream().mapToLong(ChildOrder::getQuantity).sum();
-        Assert.assertEquals(1000, sum);
-    }
 
-    @Test
-    public void testNoneDifferenceQuantity() throws Exception {
-
-        send(createTickNoDifference());
-        long sum = container.getState().getChildOrders().stream().mapToLong(ChildOrder::getQuantity).sum();
-        Assert.assertEquals(0, sum);
-    }
-
-    @Test
-    public void testSignificantDifferencePrice() throws Exception {
-
-        send(createTickValidDifference());
-        long sum = container.getState().getChildOrders().stream().mapToLong(ChildOrder::getPrice).sum();
-        Assert.assertEquals(166, sum);
-    }
-
-    @Test
-    public void testNoneDifferencePrice() throws Exception {
-
-        send(createTickNoDifference());
-        long sum = container.getState().getChildOrders().stream().mapToLong(ChildOrder::getPrice).sum();
-        Assert.assertEquals(0, sum);
-    }
 }

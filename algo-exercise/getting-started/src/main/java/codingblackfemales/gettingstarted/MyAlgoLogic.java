@@ -15,42 +15,26 @@ import org.slf4j.LoggerFactory;
 
 public class MyAlgoLogic implements AlgoLogic {
 
-    private long historicalStockAverage;
     private static final Logger logger = LoggerFactory.getLogger(MyAlgoLogic.class);
 
-    MyAlgoLogic() {
-        setHistoricalStockAverage();
-    }
 
     @Override
     public Action evaluate(SimpleAlgoState state) {
 
-        // Strategy:
-        // We have a historical stock average over time.
-        // If our price is significantly below the average, we trigger a buy.
-        // A significant difference is considered a difference greater than 5.
-        // Otherwise, we do not do an action.
-
-        var orderBookAsString = Util.orderBookToString(state);
+        String orderBookAsString = Util.orderBookToString(state);
 
         logger.info("[MYALGO] The state of the order book is:\n" + orderBookAsString);
 
         AskLevel ask = state.getAskAt(0);
+        BidLevel bid = state.getBidAt(0);
 
-        if(ask.getPrice() -  historicalStockAverage > 5 ) {
-            return new CreateChildOrder(Side.BUY, ask.getQuantity(), ask.getPrice());
+        if(ask.getPrice() > bid.getPrice()) {
+            long quantity = Math.min(bid.getQuantity(), ask.getQuantity());
+            return new CreateChildOrder(Side.SELL, quantity, ask.getPrice() );
         } else {
-            return NoAction.NoAction;
+            return new CreateChildOrder(Side.BUY, bid.getQuantity(), ask.getPrice());
         }
 
     }
 
-
-    public void setHistoricalStockAverage() {
-        // Logic here to retrieve historical average from another data store.
-        // In the case of this example, historical average will be 98.
-        // In an actual application, we would retrieve the historical trade average from database.
-
-        this.historicalStockAverage = 98;
-    }
 }
